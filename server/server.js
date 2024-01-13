@@ -7,6 +7,7 @@ import morgan from "morgan";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import { time, timeStamp } from "console";
+import { escape } from "querystring";
 
 
 // Preparing ingredients...
@@ -39,6 +40,10 @@ const taskSchema = mongoose.Schema({
   state: {
     type: String,
     enum: ['Working', 'Waiting', 'Done', 'Delayed', 'Cancelled']
+  },
+  category: {
+    type: String,
+    default: 'None'
   }
 })
 
@@ -47,17 +52,62 @@ const taskSchema = mongoose.Schema({
 const Task = mongoose.model('Task', taskSchema);
 
 
-// The api
-app.get('/api/tasks', async (req, res) => {
+// db functions
+// fetch tasks
+async function fetchTask(filter) {
   try {
-    const allTasks = Task.find({}).then((tasks) => {
-      res.status(200).send({
-        allTasks: tasks
-      })
-    })
+    const tasks = await Task.find(filter);
+    return tasks;
+  } catch (error) {
+    console.error('Talima server: ' + error);
+    throw error;
+  }
+}
+
+
+// add task
+async function addTask(task) {
+  try {
+    await Task.insertOne(task);
+    return true;
   } catch(error) {
-    console.error('Talima: ' + error);
-    res.status(500).send({error: 'Could not get data from the db'})
+    console.error('Talima server: ' + error);
+    throw error;
+  }
+}
+
+
+// The api
+// get all tasks
+app.get('/api/task', async (req, res) => {
+  try {
+    const tasks = await fetchTask({});
+    res.status(200).send({ tasks: tasks });
+  } catch (error) {
+    res.status(500).send({ error: 'Could not fetch data from database' })
+  }
+})
+
+// get tasks accourding to category
+app.get('/api/task/:category', async (req, res) => {
+  const category = req.params.category;
+  try {
+    const tasks = await fetchTasks({
+      category: category
+    });
+    res.status(200).send({ tasks: tasks });
+  } catch (error) {
+    res.status(500).send({ error: 'Could not fetch data from database' })
+  }
+})
+
+
+// add task
+get.post('api/task/add', async (req, res) => {
+  const task = req.body.task;
+  try {
+    const response = await addTask(task);
+    escape.status(200).send({succes})
   }
 })
 
@@ -65,5 +115,5 @@ app.get('/api/tasks', async (req, res) => {
 
 // Serve this awsome app
 app.listen(port, () => {
-  console.log(`Talima is listening on port ${port}`);
+  console.log(`Talima server is listening on port ${port}`);
 })
