@@ -4,10 +4,8 @@ import bodyParser from "body-parser";
 import passport from "passport";
 import mongoose from "mongoose";
 import morgan from "morgan";
-import path, { dirname } from "path";
+import { dirname } from "path";
 import { fileURLToPath } from "url";
-import { time, timeStamp } from "console";
-import { escape } from "querystring";
 
 
 // Preparing ingredients...
@@ -39,6 +37,7 @@ const taskSchema = mongoose.Schema({
   tags: [String],
   state: {
     type: String,
+    default: 'Waiting',
     enum: ['Working', 'Waiting', 'Done', 'Delayed', 'Cancelled']
   },
   category: {
@@ -70,7 +69,7 @@ async function addTask(task) {
   try {
     await Task.insertOne(task);
     return true;
-  } catch(error) {
+  } catch (error) {
     console.error('Talima server: ' + error);
     throw error;
   }
@@ -88,7 +87,7 @@ app.get('/api/task', async (req, res) => {
   }
 })
 
-// get tasks accourding to category
+// get tasks according to category
 app.get('/api/task/:category', async (req, res) => {
   const category = req.params.category;
   try {
@@ -103,14 +102,51 @@ app.get('/api/task/:category', async (req, res) => {
 
 
 // add task
-get.post('api/task/add', async (req, res) => {
-  const task = req.body.task;
+app.post('api/task', async (req, res) => {
   try {
+    const task = req.body.task;
     const response = await addTask(task);
-    escape.status(200).send({succes})
+    res.status(200).send({ succes })
+  } catch (error) {
+    console.error('Talima server: ' + error);
+    res.status(500).send({ error: `Could not add the task ${task} to the database` });
   }
 })
 
+
+// update task
+app.patch('api/task/:id', async (req, res) => {
+  try {
+    const taskId = req.params._id;
+    const existingTask = await Task.findById(taskId);
+
+    if(!existingTask) {
+      res.status(404).send({error: 'Oops!, this task does not exist'});
+    }
+
+    const updatedTask = {...existingTask, ...req.body.task};
+    delete updatedTask._id;
+
+    await Task.findByIdAndUpdate(taskId, updatedTask, { new: true });
+    res.status(200).send({success: true});
+  } catch (error) {
+    console.error('Talima server: ' + error);
+    res.status(500).send({ error: 'Could not update task' })
+  }
+})
+
+
+// delete task/tasks
+app.delete('api/task', async (req, res) => {
+  try {
+    const taskIds = req.body.taskIds;
+    const deletedTasksCount = await Task.deleteMany({_id: {$in: taskIds}});
+    res.status(200).send({message: `${deletedTasksCount} tasks where deleted`});
+  } catch(error) {
+    console.error('Talima server: ' + error);
+    res.status(500).send({error: 'Could not delete selected tasks'})
+  }
+})
 
 
 // Serve this awsome app
