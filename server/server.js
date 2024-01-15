@@ -104,12 +104,18 @@ app.get('/api/task/:category', async (req, res) => {
 // add task
 app.post('api/task', async (req, res) => {
   try {
-    const task = req.body.task;
+    const title = req.body.taskTitle;
+    const body = req.body.taskBody;
+    const task = {
+      title: title,
+      body: body
+    }
+
     const response = await addTask(task);
     res.status(200).send({ succes })
   } catch (error) {
     console.error('Talima server: ' + error);
-    res.status(500).send({ error: `Could not add the task ${task} to the database` });
+    res.status(500).send({ error: `Could not add the task ${title} to the database` });
   }
 })
 
