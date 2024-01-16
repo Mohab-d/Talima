@@ -1,30 +1,66 @@
 import React, { useState, useEffect } from 'react';
-import Task from './component/Task';
 import axios from 'axios';
+import Task from './component/Task';
+import AddTaskForm from './component/AddTaskForm';
 
 
 function App() {
 
   const [tasks, setTasks] = useState();
+  const [selectedTasks, setSelectedTasks] = useState([]);
 
-  useEffect(() => {
-    const allTasks = axios.get('/api/tasks')
+  function fetchData() {
+    const allTasks = axios.get('/api/task')
       .then((response) => {
-        setTasks(response.data.allTasks)
+        setTasks(response.data.tasks)
+        console.log('response here: ' + response)
       })
       .catch((error) => {
         console.error('Talima client error: ' + error);
       })
+  }
+
+  useEffect(() => { // TBD: when getting an empty array the server responds with a 304 error code, check that out
+    fetchData();
   }, [])
+
+  function handleCheckbox(event) {
+    const taskIndex = event.target.parentNode.id;
+    const isChecked = event.target.checked;
+
+    setSelectedTasks(prevSelection => {
+      if(isChecked) {
+        return [...prevSelection, taskIndex];
+      }
+      return prevSelection.filter(index => index !== taskIndex);
+    })
+  }
+
+  // Delete selected tasks
+  function handleDelete() {
+    axios.delete('/api/task', {data: {selectedTasks: selectedTasks}})
+    .then(response => {
+      console.log('Tasks were deleted successfully');
+      fetchData();
+    })
+    .catch(error => {
+      console.error("Talima client: " + error);
+    }) 
+  }
 
 
   return (
     <div className="App">
       <h1>Hi...</h1>
+      <h2>You can add tasks here</h2>
+      <AddTaskForm/>
+      <h2>Or if you would like to delete selected tasks</h2>
+      <button onClick={handleDelete}>Delete selected</button>
       <h2>Here are some tasks</h2>
       <ul>
         {tasks && tasks.map((task, index) => {
-          return <li key={index} id={index}>
+          return <li key={index} id={task._id}>
+            <input type='checkbox' onClick={handleCheckbox}></input>
             <Task title={task.title}
               body={task.body}
               createdAt={task.createdAt}

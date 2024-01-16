@@ -17,6 +17,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 //Middlewares
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('dev'));
+app.use(express.json());
 
 
 // Connect db
@@ -67,7 +68,7 @@ async function fetchTask(filter) {
 // add task
 async function addTask(task) {
   try {
-    await Task.insertOne(task);
+    await Task.create(task);
     return true;
   } catch (error) {
     console.error('Talima server: ' + error);
@@ -102,39 +103,37 @@ app.get('/api/task/:category', async (req, res) => {
 
 
 // add task
-app.post('api/task', async (req, res) => {
+app.post('/api/task', async (req, res) => {
   try {
-    const title = req.body.taskTitle;
-    const body = req.body.taskBody;
     const task = {
-      title: title,
-      body: body
+      title: req.body.task.taskTitle,
+      body: req.body.task.taskBody,
     }
 
     const response = await addTask(task);
-    res.status(200).send({ succes })
+    res.status(200).send({ succes: true })
   } catch (error) {
     console.error('Talima server: ' + error);
-    res.status(500).send({ error: `Could not add the task ${title} to the database` });
+    res.status(500).send({ error: `Could not add the task to the database` });
   }
 })
 
 
 // update task
-app.patch('api/task/:id', async (req, res) => {
+app.patch('/api/task/:id', async (req, res) => {
   try {
     const taskId = req.params._id;
     const existingTask = await Task.findById(taskId);
 
-    if(!existingTask) {
-      res.status(404).send({error: 'Oops!, this task does not exist'});
+    if (!existingTask) {
+      res.status(404).send({ error: 'Oops!, this task does not exist' });
     }
 
-    const updatedTask = {...existingTask, ...req.body.task};
+    const updatedTask = { ...existingTask, ...req.body.task };
     delete updatedTask._id;
 
     await Task.findByIdAndUpdate(taskId, updatedTask, { new: true });
-    res.status(200).send({success: true});
+    res.status(200).send({ success: true });
   } catch (error) {
     console.error('Talima server: ' + error);
     res.status(500).send({ error: 'Could not update task' })
@@ -143,14 +142,14 @@ app.patch('api/task/:id', async (req, res) => {
 
 
 // delete task/tasks
-app.delete('api/task', async (req, res) => {
+app.delete('/api/task', async (req, res) => {
   try {
-    const taskIds = req.body.taskIds;
-    const deletedTasksCount = await Task.deleteMany({_id: {$in: taskIds}});
-    res.status(200).send({message: `${deletedTasksCount} tasks where deleted`});
-  } catch(error) {
+    const taskIds = req.body.selectedTasks;
+    const deletedTasksCount = await Task.deleteMany({ _id: { $in: taskIds } });
+    res.status(200).send({ message: `${deletedTasksCount} tasks where deleted` });
+  } catch (error) {
     console.error('Talima server: ' + error);
-    res.status(500).send({error: 'Could not delete selected tasks'})
+    res.status(500).send({ error: 'Could not delete selected tasks' })
   }
 })
 
