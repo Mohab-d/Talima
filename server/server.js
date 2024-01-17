@@ -120,17 +120,20 @@ app.post('/api/task', async (req, res) => {
 
 
 // update task
-app.patch('/api/task/:id', async (req, res) => {
+app.patch('/api/task', async (req, res) => {
   try {
-    const taskId = req.params._id;
+    const taskId = req.body.id;
     const existingTask = await Task.findById(taskId);
 
     if (!existingTask) {
       res.status(404).send({ error: 'Oops!, this task does not exist' });
     }
 
-    const updatedTask = { ...existingTask, ...req.body.task };
-    delete updatedTask._id;
+    // Note: this syntax is used to update object in immutable way
+    // if the first and second objects have exact properties
+    // the second object would overwrite the first one's
+    console.log(existingTask)
+    const updatedTask = { ...existingTask._doc, ...req.body.editedTask };
 
     await Task.findByIdAndUpdate(taskId, updatedTask, { new: true });
     res.status(200).send({ success: true });

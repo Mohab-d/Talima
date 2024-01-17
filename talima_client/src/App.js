@@ -29,7 +29,7 @@ function App() {
     const isChecked = event.target.checked;
 
     setSelectedTasks(prevSelection => {
-      if(isChecked) {
+      if (isChecked) {
         return [...prevSelection, taskIndex];
       }
       return prevSelection.filter(index => index !== taskIndex);
@@ -38,14 +38,14 @@ function App() {
 
   // Delete selected tasks
   function handleDelete() {
-    axios.delete('/api/task', {data: {selectedTasks: selectedTasks}})
-    .then(response => {
-      console.log('Tasks were deleted successfully');
-      fetchData();
-    })
-    .catch(error => {
-      console.error("Talima client: " + error);
-    }) 
+    axios.delete('/api/task', { data: { selectedTasks: selectedTasks } })
+      .then(response => {
+        console.log('Tasks were deleted successfully');
+        fetchData();
+      })
+      .catch(error => {
+        console.error("Talima client: " + error);
+      })
   }
 
 
@@ -53,7 +53,7 @@ function App() {
     <div className="App">
       <h1>Hi...</h1>
       <h2>You can add tasks here</h2>
-      <AddTaskForm/>
+      <AddTaskForm fetchData={fetchData} />
       <h2>Or if you would like to delete selected tasks</h2>
       <button onClick={handleDelete}>Delete selected</button>
       <h2>Here are some tasks</h2>
@@ -61,7 +61,8 @@ function App() {
         {tasks && tasks.map((task, index) => {
           return <li key={index} id={task._id}>
             <input type='checkbox' onClick={handleCheckbox}></input>
-            <Task title={task.title}
+            <Task id={task._id}
+              title={task.title}
               body={task.body}
               createdAt={task.createdAt}
               tags={task.tags}
