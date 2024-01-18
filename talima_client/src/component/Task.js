@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-
+// TODO: try using relations between Category and Task modules
 function Task(props) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTask, setEditedTask] = useState({
@@ -47,6 +47,7 @@ function Task(props) {
         <h4>{editedTask.body}</h4>
       )}
       <p>{props.createdAt}</p>
+      <p>{props.category}</p>
       <ul>
         {props.tags.forEach(tag => {
           <li>{tag}</li>

@@ -4,7 +4,10 @@ import axios from "axios";
 function AddTaskForm(props) {
     const [task, setTask] = useState({
         taskTitle: '',
-        taskBody: ''
+        taskBody: '',
+        taskCategory: '',
+        taskTag: '',
+        taskStatus: ''
     })
 
     function handleInput(event) {
@@ -18,7 +21,7 @@ function AddTaskForm(props) {
             .then(response => {
                 console.log('Task is added successfully');
                 props.fetchData();
-                setTask({...task, 'taskTitle': '', 'taskBody': ''})
+                setTask({...task, 'taskTitle': '', 'taskBody': '', 'taskCategory': ''})
             })
             .catch(error => {
                 console.log('Could not add task');
@@ -31,6 +34,13 @@ function AddTaskForm(props) {
             <input name="taskTitle" onChange={handleInput} value={task.taskTitle}></input>
             <label>body</label>
             <input name="taskBody" onChange={handleInput} value={task.taskBody}></input>
+            <label>category</label>
+            <input name="taskCategory" onChange={handleInput} value={task.taskCategory}>
+            </input>
+            <label>tags</label>
+            <input name="taskTag" onChange={handleInput} value={task.taskTag}></input>
+            <label>status</label>
+            <input name="taskStatus" onChange={handleInput} value={task.taskStatus}></input>
             <button>Add task</button>
         </form>
     )

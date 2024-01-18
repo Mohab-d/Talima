@@ -8,6 +8,7 @@ function App() {
 
   const [tasks, setTasks] = useState();
   const [selectedTasks, setSelectedTasks] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   function fetchData() {
     const allTasks = axios.get('/api/task')
@@ -18,6 +19,17 @@ function App() {
       .catch((error) => {
         console.error('Talima client error: ' + error);
       })
+  }
+
+
+  function fetchCateogries() {
+    const allCategories = axios.get('/api/category')
+    .then(response => {
+      setCategories(response.data.categories)
+    })
+    .catch(error => {
+      console.error('Talima client: ' + error)
+    })
   }
 
   useEffect(() => { // TBD: when getting an empty array the server responds with a 304 error code, check that out
@@ -65,6 +77,7 @@ function App() {
               title={task.title}
               body={task.body}
               createdAt={task.createdAt}
+              category={task.category}
               tags={task.tags}
               state={task.state} />
           </li>
