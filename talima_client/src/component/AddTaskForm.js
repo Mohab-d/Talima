@@ -1,14 +1,20 @@
 import { useState } from "react";
 import axios from "axios";
+import CategoryForm from "./CategoryForm";
 
 function AddTaskForm(props) {
     const [task, setTask] = useState({
         taskTitle: '',
-        taskBody: ''
+        taskBody: '',
+        taskCategory: '',
+        taskTag: '',
+        taskStatus: ''
     })
+    const [selectedCategory, setSelectedCategory] = useState('');
 
     function handleInput(event) {
         setTask({ ...task, [event.target.name]: event.target.value })
+        console.log(event.target.name)
         console.log(task)
     }
 
@@ -18,7 +24,7 @@ function AddTaskForm(props) {
             .then(response => {
                 console.log('Task is added successfully');
                 props.fetchData();
-                setTask({...task, 'taskTitle': '', 'taskBody': ''})
+                setTask({ ...task, 'taskTitle': '', 'taskBody': '', 'taskCategory': '' })
             })
             .catch(error => {
                 console.log('Could not add task');
@@ -31,6 +37,12 @@ function AddTaskForm(props) {
             <input name="taskTitle" onChange={handleInput} value={task.taskTitle}></input>
             <label>body</label>
             <input name="taskBody" onChange={handleInput} value={task.taskBody}></input>
+            <label>category</label>
+            <CategoryForm handleInput={handleInput} value={task.taskCategory}/>
+            <label>tags</label>
+            <input name="taskTag" onChange={handleInput} value={task.taskTag}></input>
+            <label>status</label>
+            <input name="taskStatus" onChange={handleInput} value={task.taskStatus}></input>
             <button>Add task</button>
         </form>
     )

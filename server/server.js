@@ -6,6 +6,8 @@ import mongoose from "mongoose";
 import morgan from "morgan";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+import Task from "./models/Task.js";
+import Category from "./models/Category.js";
 
 
 // Preparing ingredients...
@@ -24,40 +26,12 @@ app.use(express.json());
 mongoose.connect(process.env.DB_URL);
 
 
-// db schemas
-const taskSchema = mongoose.Schema({
-  title: {
-    type: String,
-    required: true
-  },
-  body: String,
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  tags: [String],
-  state: {
-    type: String,
-    default: 'Waiting',
-    enum: ['Working', 'Waiting', 'Done', 'Delayed', 'Cancelled']
-  },
-  category: {
-    type: String,
-    default: 'None'
-  }
-})
-
-
-// db models configs
-const Task = mongoose.model('Task', taskSchema);
-
-
 // db functions
 // fetch tasks
 async function fetchTask(filter) {
   try {
     const tasks = await Task.find(filter);
-    return tasks;
+    return tasks
   } catch (error) {
     console.error('Talima server: ' + error);
     throw error;
@@ -68,10 +42,26 @@ async function fetchTask(filter) {
 // add task
 async function addTask(task) {
   try {
-    await Task.create(task);
-    return true;
+    // await Category.create(task.category); // TODO: find the best way to handle this
+    const categoryExist = await fetchFromCollection(Category, {name: task.category})
+    if(categoryExist.length === 0) {
+      await Category.create({name: task.category})
+    }
+    await Task.create(task)
   } catch (error) {
     console.error('Talima server: ' + error);
+    throw error;
+  }
+}
+
+
+// fetch from collection
+async function fetchFromCollection(collection, filter) {
+  try {
+  const data = collection.find(filter);
+  return data;
+  } catch(error) {
+    console.error('Talima server: ' + error)
     throw error;
   }
 }
@@ -108,6 +98,7 @@ app.post('/api/task', async (req, res) => {
     const task = {
       title: req.body.task.taskTitle,
       body: req.body.task.taskBody,
+      category: req.body.task.taskCategory
     }
 
     const response = await addTask(task);
@@ -123,7 +114,7 @@ app.post('/api/task', async (req, res) => {
 app.patch('/api/task', async (req, res) => {
   try {
     const taskId = req.body.id;
-    const existingTask = await Task.findById(taskId);
+    const existingTask = await fetchTask({_id: taskId})
 
     if (!existingTask) {
       res.status(404).send({ error: 'Oops!, this task does not exist' });
@@ -156,6 +147,16 @@ app.delete('/api/task', async (req, res) => {
   }
 })
 
+
+app.get('/api/category', async (req, res) => {
+  try {
+    const categories = await fetchFromCollection(Category, {});
+    res.status(200).send({categories: categories})
+  } catch(error) {
+    console.error("Talima server: " + error)
+    res.status(500).send({error: 'Could not get categories'})
+  }
+})
 
 // Serve this awsome app
 app.listen(port, () => {
