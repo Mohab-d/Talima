@@ -66,6 +66,7 @@ async function fetchFromCollection(collection, filter) {
   }
 }
 
+
 // The api
 // get all tasks
 app.get('/api/task', async (req, res) => {
@@ -146,6 +147,16 @@ app.delete('/api/task', async (req, res) => {
   }
 })
 
+
+app.get('/api/category', async (req, res) => {
+  try {
+    const categories = await fetchFromCollection(Category, {});
+    res.status(200).send({categories: categories})
+  } catch(error) {
+    console.error("Talima server: " + error)
+    res.status(500).send({error: 'Could not get categories'})
+  }
+})
 
 // Serve this awsome app
 app.listen(port, () => {

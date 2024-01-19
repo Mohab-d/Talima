@@ -14,7 +14,6 @@ function App() {
     const allTasks = axios.get('/api/task')
       .then((response) => {
         setTasks(response.data.tasks)
-        console.log('response here: ' + response)
       })
       .catch((error) => {
         console.error('Talima client error: ' + error);
