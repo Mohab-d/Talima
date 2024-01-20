@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Task from './component/Task';
 import AddTaskForm from './component/AddTaskForm';
+import Filter from './component/Filter';
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
 
   useEffect(() => { // TBD: when getting an empty array the server responds with a 304 error code, check that out
     fetchData();
+    fetchCateogries();
   }, [])
 
   function handleCheckbox(event) {
@@ -64,9 +66,12 @@ function App() {
     <div className="App">
       <h1>Hi...</h1>
       <h2>You can add tasks here</h2>
-      <AddTaskForm fetchData={fetchData} />
+      <AddTaskForm fetchData={fetchData} categories={categories}/>
       <h2>Or if you would like to delete selected tasks</h2>
       <button onClick={handleDelete}>Delete selected</button>
+      <h2>Filter tasks?</h2>
+      <p>Category filter:</p>
+      <Filter array={categories}/>
       <h2>Here are some tasks</h2>
       <ul>
         {tasks && tasks.map((task, index) => {

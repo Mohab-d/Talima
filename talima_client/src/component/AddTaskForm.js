@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import CategoryForm from "./CategoryForm";
+import CategorySelector from "./CategorySelector";
 
 function AddTaskForm(props) {
     const [task, setTask] = useState({
@@ -38,7 +38,7 @@ function AddTaskForm(props) {
             <label>body</label>
             <input name="taskBody" onChange={handleInput} value={task.taskBody}></input>
             <label>category</label>
-            <CategoryForm handleInput={handleInput} value={task.taskCategory}/>
+            <CategorySelector handleInput={handleInput} value={task.taskCategory} categories={props.categories}/>
             <label>tags</label>
             <input name="taskTag" onChange={handleInput} value={task.taskTag}></input>
             <label>status</label>
