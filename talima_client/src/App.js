@@ -10,6 +10,7 @@ function App() {
   const [tasks, setTasks] = useState();
   const [selectedTasks, setSelectedTasks] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [selectedFilter, setSelectedFilter] = useState();
 
   function fetchData() {
     const allTasks = axios.get('/api/task')
@@ -61,6 +62,18 @@ function App() {
       })
   }
 
+  // filter tasks
+  function handleFilter(event) {
+    axios.get(`/api/task/${event.target.value}`)
+      .then((response) => {
+        setTasks(response.data.tasks)
+        console.log(response.data)
+      })
+      .catch((error) => {
+        console.error('Talima error: ' + error)
+      }) 
+  }
+
 
   return (
     <div className="App">
@@ -71,7 +84,7 @@ function App() {
       <button onClick={handleDelete}>Delete selected</button>
       <h2>Filter tasks?</h2>
       <p>Category filter:</p>
-      <Filter array={categories}/>
+      <Filter array={categories} name="categoryFilter" value={selectedFilter} handleFilter={handleFilter}/>
       <h2>Here are some tasks</h2>
       <ul>
         {tasks && tasks.map((task, index) => {

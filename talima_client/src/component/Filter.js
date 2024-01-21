@@ -1,8 +1,9 @@
 const Filter = (props) => {
   return (
-    <select>
+    <select onChange={props.handleFilter} name={props.name} value={props.selectedFilter}>
+      <option>All</option>
       {props.array && props.array.map((item, index) => {
-        return <option key={index} id={index}>{item}</option>
+        return <option key={index} id={index}>{item.name}</option>
       })}
     </select>
   )

@@ -38,7 +38,7 @@ function AddTaskForm(props) {
             <label>body</label>
             <input name="taskBody" onChange={handleInput} value={task.taskBody}></input>
             <label>category</label>
-            <CategorySelector handleInput={handleInput} value={task.taskCategory} categories={props.categories}/>
+            <CategorySelector handleInput={handleInput} name="taskCategory" value={task.taskCategory} categories={props.categories}/>
             <label>tags</label>
             <input name="taskTag" onChange={handleInput} value={task.taskTag}></input>
             <label>status</label>

@@ -43,9 +43,9 @@ async function fetchTask(filter) {
 async function addTask(task) {
   try {
     // await Category.create(task.category); // TODO: find the best way to handle this
-    const categoryExist = await fetchFromCollection(Category, {name: task.category})
-    if(categoryExist.length === 0) {
-      await Category.create({name: task.category})
+    const categoryExist = await fetchFromCollection(Category, { name: task.category })
+    if (categoryExist.length === 0) {
+      await Category.create({ name: task.category })
     }
     await Task.create(task)
   } catch (error) {
@@ -58,9 +58,9 @@ async function addTask(task) {
 // fetch from collection
 async function fetchFromCollection(collection, filter) {
   try {
-  const data = collection.find(filter);
-  return data;
-  } catch(error) {
+    const data = collection.find(filter);
+    return data;
+  } catch (error) {
     console.error('Talima server: ' + error)
     throw error;
   }
@@ -81,8 +81,13 @@ app.get('/api/task', async (req, res) => {
 // get tasks according to category
 app.get('/api/task/:category', async (req, res) => {
   const category = req.params.category;
+  console.log(category)
   try {
-    const tasks = await fetchTasks({
+    if (category === "All") {
+      const tasks = await fetchTask({});
+      res.status(200).send({ tasks: tasks });
+    }
+    const tasks = await fetchTask({
       category: category
     });
     res.status(200).send({ tasks: tasks });
@@ -114,7 +119,7 @@ app.post('/api/task', async (req, res) => {
 app.patch('/api/task', async (req, res) => {
   try {
     const taskId = req.body.id;
-    const existingTask = await fetchTask({_id: taskId})
+    const existingTask = await fetchTask({ _id: taskId })
 
     if (!existingTask) {
       res.status(404).send({ error: 'Oops!, this task does not exist' });
@@ -151,10 +156,10 @@ app.delete('/api/task', async (req, res) => {
 app.get('/api/category', async (req, res) => {
   try {
     const categories = await fetchFromCollection(Category, {});
-    res.status(200).send({categories: categories})
-  } catch(error) {
+    res.status(200).send({ categories: categories })
+  } catch (error) {
     console.error("Talima server: " + error)
-    res.status(500).send({error: 'Could not get categories'})
+    res.status(500).send({ error: 'Could not get categories' })
   }
 })
 
