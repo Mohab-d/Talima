@@ -10,16 +10,13 @@ const taskSchema = mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  tags: [String],
+  priority: [String],
   state: {
     type: String,
     default: 'Waiting',
     enum: ['Working', 'Waiting', 'Done', 'Delayed', 'Cancelled']
   },
-  category: {
-    type: String,
-    default: 'None'
-  }
+  category: {name: String}
 })
 
 

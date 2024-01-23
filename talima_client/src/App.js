@@ -16,6 +16,7 @@ function App() {
     const allTasks = axios.get('/api/task')
       .then((response) => {
         setTasks(response.data.tasks)
+        console.log(response.data.tasks)
       })
       .catch((error) => {
         console.error('Talima client error: ' + error);
@@ -88,13 +89,14 @@ function App() {
       <h2>Here are some tasks</h2>
       <ul>
         {tasks && tasks.map((task, index) => {
-          return <li key={index} id={task._id}>
+          // TBD: 2 elements with the same id is not allowed
+          return <li key={index} id={task._id}> 
             <input type='checkbox' onClick={handleCheckbox}></input>
             <Task id={task._id}
               title={task.title}
               body={task.body}
               createdAt={task.createdAt}
-              category={task.category}
+              category={task.category.name}
               tags={task.tags}
               state={task.state} />
           </li>

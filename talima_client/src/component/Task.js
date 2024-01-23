@@ -48,11 +48,6 @@ function Task(props) {
       )}
       <p>{props.createdAt}</p>
       <p>{props.category}</p>
-      <ul>
-        {props.tags.forEach(tag => {
-          <li>{tag}</li>
-        })}
-      </ul>
       <p>{props.state}</p>
     </div>
   )

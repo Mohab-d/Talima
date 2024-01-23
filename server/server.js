@@ -43,7 +43,8 @@ async function fetchTask(filter) {
 async function addTask(task) {
   try {
     // await Category.create(task.category); // TODO: find the best way to handle this
-    const categoryExist = await fetchFromCollection(Category, { name: task.category })
+    console.log(task)
+    const categoryExist = await fetchFromCollection(Category, { name: task.category.name })
     if (categoryExist.length === 0) {
       await Category.create({ name: task.category })
     }
@@ -103,7 +104,9 @@ app.post('/api/task', async (req, res) => {
     const task = {
       title: req.body.task.taskTitle,
       body: req.body.task.taskBody,
-      category: req.body.task.taskCategory
+      category: {
+        name: req.body.task.taskCategory
+      }
     }
 
     const response = await addTask(task);
