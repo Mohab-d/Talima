@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Task from './component/Task';
-import AddTaskForm from './component/AddTaskForm';
-import Filter from './component/Filter';
+import Task from './component/TaskComponent';
+import AddTaskForm from './component/AddTaskFormComponent';
+import Filter from './component/FilterComponent';
 
 
 function App() {

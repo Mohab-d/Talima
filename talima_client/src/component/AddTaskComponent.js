@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 
 
-function AddTask(props) {
+function AddTaskComponent(props) {
   const [task, setTask] = useState();
 
   async function addTask(formData) {
@@ -24,4 +24,4 @@ function AddTask(props) {
   )
 }
 
-export default AddTask;
+export default AddTaskComponent

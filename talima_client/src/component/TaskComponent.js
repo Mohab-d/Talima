@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 
 // TODO: try using relations between Category and Task modules
-function Task(props) {
+function TaskComponent(props) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTask, setEditedTask] = useState({
     title: props.title,
@@ -53,4 +53,4 @@ function Task(props) {
   )
 }
 
-export default Task;
+export default TaskComponent;

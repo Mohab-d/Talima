@@ -1,8 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
-import CategorySelector from "./CategorySelector";
+import CategorySelector from "./CategorySelectorComponent";
 
-function AddTaskForm(props) {
+function AddTaskFormComponent(props) {
     const [task, setTask] = useState({
         taskTitle: '',
         taskBody: '',
@@ -45,4 +45,4 @@ function AddTaskForm(props) {
     )
 }
 
-export default AddTaskForm;
+export default AddTaskFormComponent;

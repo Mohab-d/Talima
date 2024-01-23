@@ -1,4 +1,4 @@
-const CategorySelector = props => {
+const CategorySelectorComponent = props => {
 
   return (
     <select onChange={props.handleInput} name={props.name} value={props.value}>
@@ -9,4 +9,4 @@ const CategorySelector = props => {
   )
 }
 
-export default CategorySelector;
+export default CategorySelectorComponent;

@@ -1,4 +1,4 @@
-const Filter = (props) => {
+const FilterComponent = (props) => {
   return (
     <select onChange={props.handleFilter} name={props.name} value={props.selectedFilter}>
       <option>All</option>
@@ -9,4 +9,4 @@ const Filter = (props) => {
   )
 }
 
-export default Filter;
+export default FilterComponent;
