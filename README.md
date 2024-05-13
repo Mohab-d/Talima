@@ -31,7 +31,7 @@ npm run serve
 npm run start
 ```
 
-Now you can go to [The talima client](http://localhost:8080).
+Now you can go to [The talima client](http://localhost:3000).
 
 # Contribution
 Talima is a to do list app that is main focus is minimalism, any contribution that serves that is welcomed!.
