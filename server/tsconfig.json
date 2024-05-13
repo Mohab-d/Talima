@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2020",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "esModuleInterop": true,
+    "strictNullChecks": true
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "src/types/*.ts",
+    "src/__tests__/*.ts",
+    "node_modules",
+    ".vscode",
+    ".env",
+    ".git",
+    ".gitignore"
+  ]
+}
